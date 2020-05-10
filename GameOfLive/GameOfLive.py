@@ -8,7 +8,7 @@ import numpy
 pygame.init()
 
 # Tamaño de la pantalla
-width, height = 600, 600
+width, height = 640, 640
 screen = pygame.display.set_mode( (width,height) )
 
 # Color de la rejilla
@@ -16,7 +16,7 @@ bg = 8,8,8
 screen.fill( bg )
 
 # Numero de celdas
-nxC, nyC = 32, 32
+nxC, nyC = 64, 64
 
 # Dimension de la celda
 dimCW = int( width/nxC  ) 
@@ -52,6 +52,16 @@ while True:
     for event in ev:
         if event.type == pygame.KEYDOWN:
             pauseExect = not pauseExect
+
+        mouseClick = pygame.mouse.get_pressed()
+        
+        if sum(mouseClick)>0 :
+            posX, posY = pygame.mouse.get_pos()
+            print( posX, posY )
+            celX, celY = int (numpy.floor( posX / dimCW ) ), int( numpy.floor( posY / dimCH ) )
+            # print( celX, celY )
+            newGameState[ celX, celY ] = not newGameState[ celX, celY ]
+
 
     for y in range  (0,nxC):
         for x in range (0,nyC):
