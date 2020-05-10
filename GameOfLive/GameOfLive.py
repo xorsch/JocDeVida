@@ -16,14 +16,14 @@ bg = 8,8,8
 screen.fill( bg )
 
 # Numero de celdas
-nxC, nyC = 75, 75
+nxC, nyC = 32, 32
 
 # Dimension de la celda
-dimCW = int( width/nxC  )
+dimCW = int( width/nxC  ) 
 dimCH = int( height/nyC )
 
 # Estado de las celdas: Vivas=1 Muertas=0
-gameState = numpy.zeros( (nxC,nyC) )
+gameState = numpy.zeros( (nxC,nyC) )        
 
 # Automata que se mueve
 gameState[ 5,3 ] = 1
@@ -31,6 +31,9 @@ gameState[ 5,4 ] = 1
 gameState[ 5,5 ] = 1
 gameState[ 6,5 ] = 1
 gameState[ 7,4 ] = 1
+
+# Control de la pausa
+pauseExect = False
 
 
 # TODO: afegir noves funcionalitats
@@ -41,28 +44,37 @@ while True:
 
     # Limpiamos la pantalla
     screen.fill( bg )
-    # time.sleep( 0.1 )
+    time.sleep( 0.1 )
+
+    # Capturamos eventos de teclado
+    ev = pygame.event.get()
+
+    for event in ev:
+        if event.type == pygame.KEYDOWN:
+            pauseExect = not pauseExect
 
     for y in range  (0,nxC):
         for x in range (0,nyC):
             
-            # Calculamos en numero de vecinos
-            n_neigh = gameState[ (x-1) % nxC, (y-1) % nyC ] + \
-                      gameState[ (x  ) % nxC, (y-1) % nyC ] + \
-                      gameState[ (x+1) % nxC, (y-1) % nyC ] + \
-                      gameState[ (x-1) % nxC, (y  ) % nyC ] + \
-                      gameState[ (x+1) % nxC, (y  ) % nyC ] + \
-                      gameState[ (x-1) % nxC, (y+1) % nyC ] + \
-                      gameState[ (x  ) % nxC, (y+1) % nyC ] + \
-                      gameState[ (x+1) % nxC, (y+1) % nyC ]
+            if ( not pauseExect ):
 
-            # Aplicamos reglas del jueg
-            # Regla 1
-            if gameState[ x, y ] == 0 and n_neigh == 3:
-                newGameState[ x, y ] = 1 
-            # Regla 2
-            elif gameState[ x, y ] == 1 and ( n_neigh<2 or n_neigh>3 ):
-                newGameState[ x, y ] = 0
+                # Calculamos en numero de vecinos
+                n_neigh = gameState[ (x-1) % nxC, (y-1) % nyC ] + \
+                          gameState[ (x  ) % nxC, (y-1) % nyC ] + \
+                          gameState[ (x+1) % nxC, (y-1) % nyC ] + \
+                          gameState[ (x-1) % nxC, (y  ) % nyC ] + \
+                          gameState[ (x+1) % nxC, (y  ) % nyC ] + \
+                            gameState[ (x-1) % nxC, (y+1) % nyC ] + \
+                          gameState[ (x  ) % nxC, (y+1) % nyC ] + \
+                          gameState[ (x+1) % nxC, (y+1) % nyC ]
+
+                # Aplicamos reglas del jueg
+                # Regla 1
+                if gameState[ x, y ] == 0 and n_neigh == 3:
+                    newGameState[ x, y ] = 1 
+                # Regla 2
+                elif gameState[ x, y ] == 1 and ( n_neigh<2 or n_neigh>3 ):
+                    newGameState[ x, y ] = 0
 
 
             # Dibujo de la rejilla y automatas
